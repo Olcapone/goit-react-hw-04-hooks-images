@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { Component } from "react";
+import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./App.css";
+import Searchbar from "./components/Searchbar/Searchbar";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+
+export default class App extends Component {
+  static defaultProps = {
+    initialName: "",
+  };
+
+  static propTypes = {
+    initialName: PropTypes.string,
+  };
+
+  state = {
+    pictureName: this.props.initialName,
+  };
+
+  handleFormSubmit = (imageName) => {
+    if (imageName.trim() === "") {
+      toast.info(" Enter anything word! ");
+    } else {
+      this.setState({ pictureName: imageName });
+    }
+  };
+
+  render() {
+    return (
+      <>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+        <ImageGallery pictureName={this.state.pictureName} />
+        <ToastContainer />
+      </>
+    );
+  }
 }
-
-export default App;
