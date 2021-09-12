@@ -33,18 +33,20 @@ export default function ImageGallery({ pictureName }) {
     Api(pictureName, page)
       .then((res) => {
         if (res.total === 0) {
-          toast.error(`Image ${pictureName} not found`);
           setStatus("reject");
+          toast.error(`Image ${pictureName} not found`);
+        } else {
+          prevPicturesRef.current = res.hits;
+
+          pictures.length === 0
+            ? setPicture(prevPicturesRef.current)
+            : setPicture((pictures) => [
+                ...pictures,
+                ...prevPicturesRef.current,
+              ]);
+
+          setStatus("resolved");
         }
-        prevPicturesRef.current = res.hits;
-
-        console.log(pictures.length === 0);
-
-        pictures.length === 0
-          ? setPicture(prevPicturesRef.current)
-          : setPicture((pictures) => [...pictures, ...prevPicturesRef.current]);
-
-        setStatus("resolved");
       })
       .catch((error) => {
         setStatus("reject");
