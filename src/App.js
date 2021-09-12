@@ -1,39 +1,28 @@
-import { Component } from "react";
-import PropTypes from "prop-types";
+//import { Component } from "react";
+//import PropTypes from "prop-types";
 import { ToastContainer, toast } from "react-toastify";
 
 import "./App.css";
 import Searchbar from "./components/Searchbar/Searchbar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
+import useLocalStorage from "./utils/UseLocalStorage";
 
-export default class App extends Component {
-  static defaultProps = {
-    initialName: "",
-  };
+export default function App() {
+  const [pictureName, setName] = useLocalStorage("pictureName", "");
 
-  static propTypes = {
-    initialName: PropTypes.string,
-  };
-
-  state = {
-    pictureName: this.props.initialName,
-  };
-
-  handleFormSubmit = (imageName) => {
+  const handleFormSubmit = (imageName) => {
     if (imageName.trim() === "") {
       toast.info(" Enter anything word! ");
     } else {
-      this.setState({ pictureName: imageName });
+      setName(imageName);
     }
   };
 
-  render() {
-    return (
-      <>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery pictureName={this.state.pictureName} />
-        <ToastContainer />
-      </>
-    );
-  }
+  return (
+    <>
+      <Searchbar onSubmit={handleFormSubmit} />
+      <ImageGallery pictureName={pictureName} />
+      <ToastContainer />
+    </>
+  );
 }

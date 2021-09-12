@@ -1,38 +1,47 @@
-import { Component } from "react";
+//import { Component } from "react";
+import PropTypes from "prop-types";
+import useLocalStorage from "../../utils/UseLocalStorage";
 import s from "./Searchbar.module.css";
 
-export default class Searchbar extends Component {
-  state = {
-    imageName: "",
+export default function Searchbar({ onSubmit }) {
+  const [imageName, setName] = useLocalStorage("pictureName", "");
+
+  const handleNameChange = (e) => {
+    setName(e.currentTarget.value.toLowerCase());
   };
 
-  handleNameChange = (e) => {
-    this.setState({ imageName: e.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state.imageName);
+    onSubmit(imageName);
+
+    reset();
   };
 
-  render() {
-    return (
-      <header className={s.Searchbar}>
-        <form className={s.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={s.SearchFormButton}>
-            <span className={s.SearchFormButtonLabel}>Search</span>
-          </button>
+  const reset = () => {
+    //setName("");
+    window.localStorage.setItem("page", 1);
+  };
 
-          <input
-            className={s.SearchFormInput}
-            type="text"
-            name="imageName"
-            value={this.state.imageName}
-            onChange={this.handleNameChange}
-            placeholder="Search images and photos"
-          />
-        </form>
-      </header>
-    );
-  }
+  return (
+    <header className={s.Searchbar}>
+      <form className={s.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={s.SearchFormButton}>
+          <span className={s.SearchFormButtonLabel}>Search</span>
+        </button>
+
+        <input
+          className={s.SearchFormInput}
+          type="text"
+          name="imageName"
+          value={imageName}
+          onChange={handleNameChange}
+          placeholder="Search images and photos"
+        />
+      </form>
+    </header>
+  );
 }
+
+Searchbar.propTypes = {
+  imageName: PropTypes.string,
+};
