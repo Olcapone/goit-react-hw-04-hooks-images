@@ -57,7 +57,6 @@ export default function ImageGallery({ pictureName }) {
 
   const clickOnLoad = () => {
     setPage((page) => page + 1);
-
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
