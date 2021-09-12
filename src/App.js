@@ -9,7 +9,6 @@ import useLocalStorage from "./utils/UseLocalStorage";
 
 export default function App() {
   const [pictureName, setName] = useLocalStorage("pictureName", "");
-
   const handleFormSubmit = (imageName) => {
     if (imageName.trim() === "") {
       toast.info(" Enter anything word! ");

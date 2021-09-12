@@ -13,13 +13,6 @@ export default function Searchbar({ onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(imageName);
-
-    reset();
-  };
-
-  const reset = () => {
-    //setName("");
-    window.localStorage.setItem("page", 1);
   };
 
   return (

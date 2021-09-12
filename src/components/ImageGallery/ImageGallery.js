@@ -11,16 +11,19 @@ import Loader from "../Loader/Loader";
 import Button from "../Button/Button";
 
 export default function ImageGallery({ pictureName }) {
-  const [pictures, setPicture] = useState("pictures", null);
+  const [pictures, setPicture] = useState([]);
   const [page, setPage] = useLocalStorage("page", 1);
   const [status, setStatus] = useLocalStorage("status", "idle");
   const [error, saveError] = useState("error", null);
-  const prevPicturesRef = useRef(pictures);
-  const isFirstRender = useRef(true);
+  const prevPicturesRef = useRef();
+
+  useEffect(() => {
+    setPage(1);
+    setPicture([]);
+  }, [pictureName]);
 
   useEffect(() => {
     if (pictureName === "") {
-      console.log("early");
       return;
     }
 
@@ -33,10 +36,13 @@ export default function ImageGallery({ pictureName }) {
           toast.error(`Image ${pictureName} not found`);
           setStatus("reject");
         }
+        prevPicturesRef.current = res.hits;
 
-        pictures
-          ? setPicture(res.hits)
-          : setPicture((prevImage) => [...prevImage, ...res.hits]);
+        console.log(pictures.length === 0);
+
+        pictures.length === 0
+          ? setPicture(prevPicturesRef.current)
+          : setPicture((pictures) => [...pictures, ...prevPicturesRef.current]);
 
         setStatus("resolved");
       })
@@ -47,25 +53,14 @@ export default function ImageGallery({ pictureName }) {
       });
   }, [pictureName, page]);
 
-  // useEffect(() => {
+  const clickOnLoad = () => {
+    setPage((page) => page + 1);
 
-  //   Api(pictureName, page).then((res) => {
-  //     //prevPicturesRef.current = pictures.hits;
-
-  //     setPicture((prevImage) => {
-  //       console.log([...prevImage, ...res.hits]);
-
-  //       return [...prevImage, ...res.hits]
-  //     });
-  //     setStatus("resolved");
-
-  //     window.scrollTo({
-  //       top: document.documentElement.scrollHeight,
-  //       behavior: "smooth",
-  //     });
-  //   });
-
-  // }, [page]);
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   if (status === "idle") {
     return <></>;
@@ -92,10 +87,7 @@ export default function ImageGallery({ pictureName }) {
             />
           ))}
         </ul>
-        <Button
-          name={"Load more"}
-          onLoadMore={() => setPage((page) => page + 1)}
-        />
+        <Button name={"Load more"} onLoadMore={clickOnLoad} />
       </>
     );
   }
